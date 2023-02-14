@@ -1,0 +1,161 @@
+#setting up environment,loading and installing packages
+install.packages("here")
+library(here)
+install.packages("tidyverse")
+library(tidyverse)
+library(readr)
+install.packages("dplyr")
+install.packages("janitor")
+install.packages("skimr")
+install.packages("ggplot2")
+library(ggplot2)
+library(dplyr)
+library(janitor)
+library(skimr)
+install.packages("lubridate")
+library(lubridate)
+library(hms)
+
+##Collecting data 
+Jan<-read_csv(here("Data","2022-01_tripdata.csv"))
+Feb<-read_csv(here("Data","2022-02_tripdata.csv"))
+Mar<-read_csv(here("Data","2022-03_tripdata.csv"))
+Apr<-read_csv(here("Data","2022-04_tripdata.csv"))
+May<-read_csv(here("Data","2022-05_tripdata.csv"))
+Jun<-read_csv(here("Data","2022-06_tripdata.csv"))
+Jul<-read_csv(here("Data","2022-07_tripdata.csv"))
+Aug<-read_csv(here("Data","2022-08_tripdata.csv"))
+Sep<-read_csv(here("Data","2022-09_tripdata.csv"))
+Oct<-read_csv(here("Data","2022-10_tripdata.csv"))
+Nov<-read_csv(here("Data","2022-11_tripdata.csv"))
+Dec<-read_csv(here("Data","2022-12_tripdata.csv"))
+
+#viewing data, checking for column name consistency and data types
+
+str(Jan)
+str(Feb)
+str(Mar)
+str(Apr)
+str(May)
+str(Jun)
+str(Jul)
+str(Aug)
+str(Sep)
+str(Oct)
+str(Nov)
+str(Dec)
+
+
+#combining all datasets into one 
+year_trips<-bind_rows(Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec)
+head(year_trips)
+colnames(year_trips)
+remove(Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec)
+
+#Cleaning data
+##dropping unwanted columns,duplicates and missing data
+year_trips<-year_trips%>%
+  select(-c(start_lat,start_lng,end_lat,end_lng))
+str(year_trips)
+year_trips<-na.omit(year_trips)
+year_trips<-distinct(year_trips)
+
+#changing data type
+year_trips$started_at<-as_datetime(year_trips$started_at)
+year_trips$ended_at<-as_datetime(year_trips$ended_at)
+year_trips$month<-month(year_trips$started_at,label=TRUE, abbr=FALSE)
+year_trips$month<-as.character(year_trips$month)
+
+#add new columns to the data frames
+year_trips$trip_length<- difftime(year_trips$ended_at,year_trips$started_at, units = "mins")
+year_trips$month<-month(year_trips$started_at,label=TRUE, abbr=FALSE)
+year_trips$month<-as.character(year_trips$month)
+head(year_trips$trip_length)
+colnames(year_trips)
+
+#removing negative and zero trip lengths
+year_trips2<-subset(year_trips,year_trips$trip_length>0)
+
+#extracting time ride started in hours for calculating most used time of day for the rides 
+year_trips2$hour_started<-hour(year_trips2$started_at)
+
+
+#conducting descriptive analysis 
+year_trips_summary<-year_trips2%>%
+  group_by(member_casual,month)%>%
+   summarize(average_trip_length=mean(trip_length),shortest_trip= min(trip_length),longest_trip= max(trip_length))  
+                                                                                                                                                                                         
+view(year_trips_summary)
+
+
+#count no.of trips by customer type and rideable type in each month
+trips_by_type<-year_trips2%>%
+  group_by(member_casual,month,rideable_type)%>%
+  summarize(no_of_trips=n())
+
+#count no.of trips by customer type
+trips_by_type1<-year_trips2%>%
+  group_by(member_casual,month,hour_started)%>%
+  summarize(no_of_trips=n())
+
+#calculate most used station
+
+trips_station<-year_trips2%>%
+  group_by(member_casual,start_station_name,month)%>%
+  summarize(no_of_trips=n())%>%
+  arrange(-no_of_trips)
+  
+
+#defining season and time 
+seasonal_time_analysis<-trips_by_type1%>%
+    mutate(season=
+           case_when(month=="January"~"winter",
+                     month=="February"~"winter",
+                     month=="December"~"winter",
+                     month=="March"~"Spring",
+                     month=="April"~"Spring",
+                     month=="May"~"Spring",
+                     month=="June"~"Summer",
+                     month=="July"~"Summer",
+                     month=="August"~"Summer",
+                     month=="September"~"Autumn",
+                     month=="October"~"Autumn",
+                     month=="November"~"Autumn",
+                     ))%>%
+mutate(time=
+    case_when(hour_started=="0"~"Night",
+              hour_started=="1"~"Night",
+              hour_started=="2"~"Night",
+              hour_started=="3"~"Night",
+              hour_started=="4"~"Night",
+              hour_started=="5"~"Night",
+              hour_started=="6"~"Morning",
+              hour_started=="7"~"Morning",
+              hour_started=="8"~"Morning",
+              hour_started=="9"~"Morning",
+              hour_started=="10"~"Morning",
+              hour_started=="11"~"Morning",
+              hour_started=="12"~"Afternoon",
+              hour_started=="13"~"Afternoon",
+              hour_started=="14"~"Afternoon",
+              hour_started=="15"~"Afternoon",
+              hour_started=="16"~"Afternoon",
+              hour_started=="17"~"Afternoon",
+              hour_started=="18"~"Afternoon",
+              hour_started=="19"~"Evening", 
+              hour_started=="20"~"Evening",
+              hour_started=="21"~"Evening",
+              hour_started=="22"~"Evening",
+              hour_started=="23"~"Evening",
+              hour_started=="24"~"Evening"))%>%
+    group_by(member_casual,month)
+# saving data frames as csv files
+write_csv(trips_by_type,"C:\\Users\\Amna\\Desktop\\Cyclistic_rideshare\\csv\\trips_by_type.csv")
+
+write_csv(trips_by_type1,"C:\\Users\\Amna\\Desktop\\Cyclistic_rideshare\\csv\\trips_by_type1.csv")
+
+write_csv(trips_station,"C:\\Users\\Amna\\Desktop\\Cyclistic_rideshare\\csv\\trips_station.csv")       
+
+write_csv(year_trips_summary,"C:\\Users\\Amna\\Desktop\\Cyclistic_rideshare\\csv\\year_trips_summary.csv")
+
+write_csv(seasonal_time_analysis,"C:\\Users\\Amna\\Desktop\\Cyclistic_rideshare\\csv\\seasonal_time_analysis.csv")
