@@ -30,10 +30,28 @@ This phase comprised of the data cleaning to remove any bad and duplicate data. 
 ## Phase 4: Analysis
 The data was aggregated and organized to make it more useful and accessible for analysis. The calculations were performed on the data to identify trends and relationships and a summary of the analysis was prepared and saved as .csv files to be further visualized in tableau. 
 
+### Key Findings:
+* Around 60% of trips for the year comprised of annual member while the remaining 40% were done by casual riders. 
+* Both casual and annual riders largely prefer classic bikes for their trips but electric bikes were also seen more popular in casual customers. 
+* Summers is the most popular season as most trips for both customer groups were recorded during Jun-Aug
+* Both casual and members start their trips in afternoon and evening times which means that the customers primarily uses bikeshare during office hours. 
+* The peak time for both customer groups was around 6pm.
+* Members used rideshare for comparatively shorter trips on average compared to casual riders which recorded average trip length as high as 27 min in May.
+* The average trip length was not affected much by the month of the year but declined in december which means in colder months, customers usually prefer shorter rides. 
+* Stations such as Kingsbury and Kinzie St together with Clark st &Elm st were most popular among annual members while Casual riders preferred Streeter Dr & Grand Ave followed by DuSable Lakeshore Dr stations most.  
+
+
 ## Phase 5: Share
 A final presentation was prepared to discuss the findings from the analysis with the manager. The data analyzed was represented in various visualization created using tableau dashboard. The supporting visualizations and key findings were created in this phase which can be seen on the following [ link to the Dashboard1](https://public.tableau.com/app/profile/amna.amer/viz/CyclisticRideshareAnalysis/Dashboard1) and [Dashboard2](https://public.tableau.com/app/profile/amna.amer/viz/CyclisticRidesharedashboard2/Dashboard2)
+
 ## Phase 6: Act
-A conclusion was drawn to sum up the differences between the two customer types and final recommendations were provided as a solution to the business task. The deliverables were made and presented. The next steps were discovered and the need for additional data was highlighted such as customer survey to directly discover what drive casual riders to prefer casual over members and vice versa. 
+A conclusion was drawn to sum up the differences between the two customer types and final recommendations were provided as a solution to the business task. The deliverables were made and presented. The next steps were discovered and the need for additional data was highlighted such as customer survey to directly discover what drive casual riders to prefer casual over members and vice versa. Following recommendations are provided on the balance of the above analysis:
+* Company can offer discounts during the summer season on annual membership specifically on the use of classic or electric bikes to attract more customers. 
+* Marketing efforts can be targeted on the top ten stations preferred by the casual riders.
+* Extra benefits or loyalty rewards/points could be offered to long trip riders to attract them towards annual membership.
+* Marketing efforts can be focused more from 12pm to 6pm around the stations when most casual riders uses their rideshare. 
+
+Furthermore, a survey or questionnaire can be conducted to find why customers prefer a certain type of service. What factors drive their decisions and questions about their age, gender, profession can also be included to better find the target audience through further data analysis.
 
 
 
